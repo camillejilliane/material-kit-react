@@ -35,7 +35,7 @@ const Toolbar = ({ className, ...rest }) => {
         color="textPrimary"
         variant="h2"
       >
-        Manage Vendors
+        Track Transactions
       </Typography>
       <Box
         mt={1}
@@ -45,7 +45,7 @@ const Toolbar = ({ className, ...rest }) => {
           color="textSecondary"
           variant="subtitle2"
         >
-          Accounts &gt; Vendors
+          Ledger &gt; Transactions
         </Typography>
       </Box>
       <Box
@@ -69,20 +69,17 @@ const Toolbar = ({ className, ...rest }) => {
                   </InputAdornment>
                 )
               }}
-              placeholder="Search vendors"
+              placeholder="Search transactions"
               variant="outlined"
             />
           </Box>
         </Box>
         <Box>
-          <Button className={classes.exportButton}>
-            Export CSV
-          </Button>
           <Button
             color="primary"
             variant="contained"
           >
-            Approve Vendors
+            Export CSV
           </Button>
         </Box>
       </Box>

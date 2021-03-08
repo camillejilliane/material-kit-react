@@ -15,6 +15,7 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  Button,
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
@@ -26,42 +27,42 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Results = ({ className, vendors, ...rest }) => {
   const classes = useStyles();
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+  const [selectedVendorIds, setSelectedVendorIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
   const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
+    let newSelectedVendorIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedVendorIds = vendors.map((vendor) => vendor.id);
     } else {
-      newSelectedCustomerIds = [];
+      newSelectedVendorIds = [];
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedVendorIds(newSelectedVendorIds);
   };
 
   const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+    const selectedIndex = selectedVendorIds.indexOf(id);
+    let newSelectedVendorIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedVendorIds = newSelectedVendorIds.concat(selectedVendorIds, id);
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedVendorIds = newSelectedVendorIds.concat(selectedVendorIds.slice(1));
+    } else if (selectedIndex === selectedVendorIds.length - 1) {
+      newSelectedVendorIds = newSelectedVendorIds.concat(selectedVendorIds.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
+      newSelectedVendorIds = newSelectedVendorIds.concat(
+        selectedVendorIds.slice(0, selectedIndex),
+        selectedVendorIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedVendorIds(newSelectedVendorIds);
   };
 
   const handleLimitChange = (event) => {
@@ -84,45 +85,52 @@ const Results = ({ className, customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedVendorIds.length === vendors.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
+                      selectedVendorIds.length > 0
+                      && selectedVendorIds.length < vendors.length
                     }
                     onChange={handleSelectAll}
                   />
                 </TableCell>
+
                 <TableCell>
-                  Name
+                  Registration date
+                </TableCell>
+                <TableCell>
+                  Vendor Name
                 </TableCell>
                 <TableCell>
                   Email
                 </TableCell>
                 <TableCell>
-                  Location
+                  Shop Name
                 </TableCell>
                 <TableCell>
-                  Phone
+                  Shop Address
                 </TableCell>
                 <TableCell>
-                  Registration date
+                  DTI Certificate
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {vendors.slice(0, limit).map((vendor) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={vendor.id}
+                  selected={selectedVendorIds.indexOf(vendor.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={selectedVendorIds.indexOf(vendor.id) !== -1}
+                      onChange={(event) => handleSelectOne(event, vendor.id)}
                       value="true"
                     />
+                  </TableCell>
+                  <TableCell>
+                    {moment(vendor.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
                     <Box
@@ -131,29 +139,35 @@ const Results = ({ className, customers, ...rest }) => {
                     >
                       <Avatar
                         className={classes.avatar}
-                        src={customer.avatarUrl}
+                        src={vendor.avatarUrl}
                       >
-                        {getInitials(customer.name)}
+                        {getInitials(vendor.name)}
                       </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.name}
+                        {vendor.name}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    {vendor.email}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {`${vendor.shopName}`}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
+                    {`${vendor.address.city}, ${vendor.address.state}, ${vendor.address.country}`}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                    >
+                      Download
+                    </Button>
+                    {`${vendor.dtiCertificate}`}
                   </TableCell>
                 </TableRow>
               ))}
@@ -163,7 +177,7 @@ const Results = ({ className, customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={vendors.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -176,7 +190,7 @@ const Results = ({ className, customers, ...rest }) => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  customers: PropTypes.array.isRequired
+  vendors: PropTypes.array.isRequired
 };
 
 export default Results;

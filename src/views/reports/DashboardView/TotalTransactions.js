@@ -3,23 +3,23 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
   Avatar,
+  Box,
   Card,
   CardContent,
   Grid,
   Typography,
-  makeStyles,
-  Box,
-  colors
+  colors,
+  makeStyles
 } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%'
   },
   avatar: {
-    backgroundColor: colors.indigo[600],
+    backgroundColor: colors.orange[600],
     height: 56,
     width: 56
   },
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const TotalProfit = ({ className, ...rest }) => {
+const TotalCustomers = ({ className, ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -52,18 +52,18 @@ const TotalProfit = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              TOTAL PROFIT
+              TOTAL CUSTOMERS
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
             >
-              $23,200
+              1,600
             </Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
-              <AttachMoneyIcon />
+              <SwapHorizIcon />
             </Avatar>
           </Grid>
         </Grid>
@@ -91,8 +91,8 @@ const TotalProfit = ({ className, ...rest }) => {
   );
 };
 
-TotalProfit.propTypes = {
+TotalCustomers.propTypes = {
   className: PropTypes.string
 };
 
-export default TotalProfit;
+export default TotalCustomers;
