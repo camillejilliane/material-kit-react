@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
+  Box,
   Container,
-  Grid,
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
-import Profile from './Profile';
-import ProfileDetails from './ProfileDetails';
+import Results from './Results';
+import Toolbar from './Toolbar';
+import data from './data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,39 +18,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Account = () => {
+const CustomerListView = () => {
   const classes = useStyles();
+  const [customers] = useState(data);
 
   return (
     <Page
       className={classes.root}
-      title="Account"
+      title="Vendors"
     >
-      <Container maxWidth="lg">
-        <Grid
-          container
-          spacing={3}
-        >
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xs={12}
-          >
-            <Profile />
-          </Grid>
-          <Grid
-            item
-            lg={8}
-            md={6}
-            xs={12}
-          >
-            <ProfileDetails />
-          </Grid>
-        </Grid>
+      <Container maxWidth={false}>
+        <Toolbar />
+        <Box mt={3}>
+          <Results customers={customers} />
+        </Box>
       </Container>
     </Page>
   );
 };
 
-export default Account;
+export default CustomerListView;
