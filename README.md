@@ -110,3 +110,11 @@ material-react-dashboard
 
 - Email Us: contact@devias.io
 - [Follow us on Instagram](https://www.instagram.com/deviasio/)
+
+# Firestore Admin
+Before anything, make sure you have a copy of the Firebase service account private key on your device. **Please do not push this private key onto the repository.**
+
+Then, before running the server, run this command to load the environment:
+```
+export GOOGLE_APPLICATION_CREDENTIALS="path_to_private_key"
+```

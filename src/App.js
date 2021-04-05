@@ -6,9 +6,12 @@ import GlobalStyles from 'src/components/GlobalStyles';
 import 'src/mixins/chartjs';
 import theme from 'src/theme';
 import routes from 'src/routes';
+import initFirebase from './services';
 
 const App = () => {
   const routing = useRoutes(routes);
+
+  initFirebase();
 
   return (
     <ThemeProvider theme={theme}>

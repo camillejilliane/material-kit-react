@@ -15,6 +15,7 @@ import {
 import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
+import { loginUser } from '../../services/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,8 +51,16 @@ const LoginView = () => {
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(values) => {
+              const { email, password } = values;
+              loginUser(email, password, (isValid, message) => {
+                if (isValid) {
+                  console.log(message);
+                  navigate('/app/dashboard', { replace: true });
+                } else {
+                  console.log(message);
+                }
+              });
             }}
           >
             {({
