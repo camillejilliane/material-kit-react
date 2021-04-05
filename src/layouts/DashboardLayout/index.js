@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DashboardLayout = ({ setIsLoggedIn }) => {
+const DashboardLayout = ({ isLoggedIn, setIsLoggedIn }) => {
   const classes = useStyles();
   const [user, setUser] = useState({});
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
@@ -54,6 +54,8 @@ const DashboardLayout = ({ setIsLoggedIn }) => {
         user={user}
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
+        setIsLoggedIn={setIsLoggedIn}
+        isLoggedIn={isLoggedIn}
       />
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
@@ -67,7 +69,8 @@ const DashboardLayout = ({ setIsLoggedIn }) => {
 };
 
 DashboardLayout.propTypes = {
-  setIsLoggedIn: PropTypes.func
+  isLoggedIn: PropTypes.bool,
+  setIsLoggedIn: PropTypes.func,
 };
 
 export default DashboardLayout;

@@ -27,37 +27,44 @@ const items = [
   {
     href: '/app/dashboard',
     icon: BarChartIcon,
-    title: 'Dashboard'
+    title: 'Dashboard',
+    shownWhenLoggedIn: true
   },
   {
     href: '/app/customers',
     icon: UsersIcon,
-    title: 'Customers'
+    title: 'Customers',
+    shownWhenLoggedIn: true
   },
   {
     href: '/app/account',
     icon: UserIcon,
-    title: 'Vendors'
+    title: 'Vendors',
+    shownWhenLoggedIn: true
   },
   {
     href: '/app/transactions',
     icon: ShoppingBagIcon,
-    title: 'Transactions'
+    title: 'Transactions',
+    shownWhenLoggedIn: true
   },
   {
     href: '/app/settings',
     icon: SettingsIcon,
-    title: 'Settings'
+    title: 'Settings',
+    shownWhenLoggedIn: true
   },
   {
     href: '/login',
     icon: LockIcon,
-    title: 'Login'
+    title: 'Login',
+    shownWhenLoggedIn: false
   },
   {
     href: '/register',
     icon: UserPlusIcon,
-    title: 'Register'
+    title: 'Register',
+    shownWhenLoggedIn: false
   }
 ];
 
@@ -77,7 +84,9 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const NavBar = ({ onMobileClose, openMobile, user }) => {
+const NavBar = ({
+  onMobileClose, openMobile, user, isLoggedIn
+}) => {
   const classes = useStyles();
   const location = useLocation();
 
@@ -117,14 +126,16 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
       <Divider />
       <Box p={2}>
         <List>
-          {items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
+          {items
+            .filter((item) => item.shownWhenLoggedIn === isLoggedIn)
+            .map((item) => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))}
         </List>
       </Box>
     </Box>
@@ -160,7 +171,8 @@ const NavBar = ({ onMobileClose, openMobile, user }) => {
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool,
-  user: PropTypes.object
+  user: PropTypes.object,
+  isLoggedIn: PropTypes.bool
 };
 
 NavBar.defaultProps = {

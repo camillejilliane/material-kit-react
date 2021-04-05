@@ -15,7 +15,11 @@ import SettingsView from 'src/views/settings/SettingsView';
 const routes = (isLoggedIn, setIsLoggedIn) => [
   {
     path: 'app',
-    element: isLoggedIn ? <DashboardLayout setIsLoggedIn={setIsLoggedIn} /> : <Navigate to="/login" />,
+    element: isLoggedIn ? (
+      <DashboardLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    ) : (
+      <Navigate to="/login" />
+    ),
     children: [
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
