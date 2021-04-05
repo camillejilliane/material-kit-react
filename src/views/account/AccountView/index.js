@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -7,7 +7,8 @@ import {
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
-import data from './data';
+// import data from './data';
+import { getVendors, approveVendors } from '../../../services/vendors';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,17 +21,48 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
-  const [vendors] = useState(data);
+  const [query, setQuery] = useState('');
+  const [vendors, setVendors] = useState([]);
+  const [selectedVendors, setSelectedVendors] = useState([]);
+  const [filteredVendors, setFilteredVendors] = useState([]);
+  const [message, setMessage] = useState([]);
+
+  useEffect(() => {
+    getVendors(setVendors);
+  }, []);
+
+  useEffect(() => {
+    setFilteredVendors(vendors);
+  }, [vendors]);
+
+  const handleApprove = (event) => {
+    event.preventDefault();
+    approveVendors(selectedVendors, (m) => setMessage(m));
+  };
+
+  useEffect(() => {
+    const lowercaseQuery = query.toLowerCase();
+    setFilteredVendors(
+      vendors.filter(
+        (vendor) => vendor.shop
+          && ((vendor.shop.location && vendor.shop.location.toLowerCase().includes(lowercaseQuery))
+            || (vendor.shop.owner && vendor.shop.owner.toLowerCase().includes(lowercaseQuery))
+            || (vendor.shop.name && vendor.shop.name.toLowerCase().includes(lowercaseQuery))
+            || (vendor.shop.email && vendor.shop.email.toLowerCase().includes(lowercaseQuery)))
+      )
+    );
+  }, [query]);
 
   return (
-    <Page
-      className={classes.root}
-      title="Vendors"
-    >
+    <Page className={classes.root} title="Vendors">
       <Container maxWidth={false}>
-        <Toolbar />
+        {message}
+        <Toolbar setFilter={setQuery} handleApprove={handleApprove} />
         <Box mt={3}>
-          <Results vendors={vendors} />
+          <Results
+            vendors={filteredVendors}
+            setSelectedVendors={setSelectedVendors}
+          />
         </Box>
       </Container>
     </Page>
