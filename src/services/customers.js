@@ -1,8 +1,8 @@
-const admin = require('firebase-admin');
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
 export const getCustomers = (callback) => {
-  console.log(admin);
-  const db = admin.firestore();
+  const db = firebase.firestore();
   db.collection('user-profiles')
     .get()
     .then((users) => users.docs.map((user) => ({ id: user.id, ...user.data() })))
@@ -13,6 +13,19 @@ export const getCustomers = (callback) => {
     });
 };
 
-export default {
-  getCustomers
+export const deleteCustomers = (uids, callback) => {
+  const db = firebase.firestore();
+  const batch = db.batch();
+
+  uids.forEach((id) => {
+    const userRef = db.collection('user-profiles').doc(id);
+    batch.delete(userRef);
+  });
+
+  batch
+    .commit()
+    .then(() => {
+      callback('Successfully deleted the customers');
+    })
+    .catch((e) => callback(`Was not able to delete the customers: ${e.message}`));
 };
