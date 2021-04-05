@@ -20,13 +20,8 @@ import {
   UserPlus as UserPlusIcon,
   Users as UsersIcon
 } from 'react-feather';
+import getInitials from 'src/utils/getInitials';
 import NavItem from './NavItem';
-
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'SME Head',
-  name: 'Katarina Smith'
-};
 
 const items = [
   {
@@ -63,7 +58,7 @@ const items = [
     href: '/register',
     icon: UserPlusIcon,
     title: 'Register'
-  },
+  }
 ];
 
 const useStyles = makeStyles(() => ({
@@ -82,7 +77,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = ({ onMobileClose, openMobile, user }) => {
   const classes = useStyles();
   const location = useLocation();
 
@@ -94,11 +89,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const content = (
-    <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-    >
+    <Box height="100%" display="flex" flexDirection="column">
       <Box
         alignItems="center"
         display="flex"
@@ -109,24 +100,17 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         <Avatar
           className={classes.avatar}
           component={RouterLink}
-          src={user.avatar}
+          src={user.avatarUrl}
           to="/app/account"
-        />
-        <Box
-          flexDirection="column"
         >
-          <Typography
-            className={classes.name}
-            color="textPrimary"
-            variant="h5"
-          >
-            {user.name}
+          {getInitials(`${user.firstName} ${user.lastName}`)}
+        </Avatar>
+        <Box flexDirection="column">
+          <Typography className={classes.name} color="textPrimary" variant="h5">
+            {`${user.firstName} ${user.lastName}`}
           </Typography>
-          <Typography
-            color="textSecondary"
-            variant="body2"
-          >
-            {user.jobTitle}
+          <Typography color="textSecondary" variant="body2">
+            {user.address || ''}
           </Typography>
         </Box>
       </Box>
@@ -175,12 +159,14 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool
+  openMobile: PropTypes.bool,
+  user: PropTypes.object
 };
 
 NavBar.defaultProps = {
   onMobileClose: () => {},
-  openMobile: false
+  openMobile: false,
+  user: {}
 };
 
 export default NavBar;

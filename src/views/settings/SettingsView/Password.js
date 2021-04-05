@@ -11,6 +11,7 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
+import { updatePassword } from '../../../services/users';
 
 const useStyles = makeStyles(({
   root: {}
@@ -22,12 +23,22 @@ const Password = ({ className, ...rest }) => {
     password: '',
     confirm: ''
   });
+  const [message, setMessage] = useState('');
 
   const handleChange = (event) => {
     setValues({
       ...values,
       [event.target.name]: event.target.value
     });
+  };
+
+  const handleSubmit = () => {
+    const { password, confirm } = values;
+    if (password && confirm && password === confirm) {
+      updatePassword(password, (m) => setMessage(m));
+    } else {
+      setMessage('Please make sure you typed your password correctly.');
+    }
   };
 
   return (
@@ -40,6 +51,7 @@ const Password = ({ className, ...rest }) => {
           subheader="Update password"
           title="Password"
         />
+        {message}
         <Divider />
         <CardContent>
           <TextField
@@ -72,6 +84,7 @@ const Password = ({ className, ...rest }) => {
           <Button
             color="primary"
             variant="contained"
+            onClick={handleSubmit}
           >
             Update
           </Button>

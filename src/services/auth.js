@@ -56,29 +56,25 @@ export const loginUser = (email, password, callback) => {
   //   });
 };
 
-export const signOutUser = async (navigation) => {
+export const signOutUser = async (setIsLoggedIn) => {
   try {
     await firebase.auth().signOut();
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Welcome' }]
-    });
+    setIsLoggedIn(false);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const checkAuthenticated = (setUser, navigation) => {
-  firebase.auth().onAuthStateChanged((user) => {
+export const checkAuthenticated = (setLoggedIn) => {
+  const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      setUser(user);
+      setLoggedIn(true);
     } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Welcome' }]
-      });
+      setLoggedIn(false);
     }
   });
+
+  return unsubscribe;
 };
 
 export const authOnOpen = (navigation) => {

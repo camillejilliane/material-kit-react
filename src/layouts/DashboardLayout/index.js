@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
+import { getCurrentUser } from '../../services/users';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,14 +35,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DashboardLayout = () => {
+const DashboardLayout = ({ setIsLoggedIn }) => {
   const classes = useStyles();
+  const [user, setUser] = useState({});
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    getCurrentUser(setUser);
+  }, []);
 
   return (
     <div className={classes.root}>
-      <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
+      <TopBar
+        onMobileNavOpen={() => setMobileNavOpen(true)}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       <NavBar
+        user={user}
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
       />
@@ -53,6 +64,10 @@ const DashboardLayout = () => {
       </div>
     </div>
   );
+};
+
+DashboardLayout.propTypes = {
+  setIsLoggedIn: PropTypes.func
 };
 
 export default DashboardLayout;
