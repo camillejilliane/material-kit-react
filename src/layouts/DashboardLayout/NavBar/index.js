@@ -15,7 +15,7 @@ import {
   BarChart as BarChartIcon,
   Lock as LockIcon,
   Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
+  // ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon
@@ -42,12 +42,12 @@ const items = [
     title: 'Vendors',
     shownWhenLoggedIn: true
   },
-  {
-    href: '/app/transactions',
-    icon: ShoppingBagIcon,
-    title: 'Transactions',
-    shownWhenLoggedIn: true
-  },
+  // {
+  //   href: '/app/transactions',
+  //   icon: ShoppingBagIcon,
+  //   title: 'Transactions',
+  //   shownWhenLoggedIn: true
+  // },
   {
     href: '/app/settings',
     icon: SettingsIcon,
