@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 import {
   Box,
   Button,
@@ -12,186 +14,165 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-
-const states = [
-  {
-    value: 'alabama',
-    label: 'Alabama'
-  },
-  {
-    value: 'new-york',
-    label: 'New York'
-  },
-  {
-    value: 'san-francisco',
-    label: 'San Francisco'
-  }
-];
+import { updateUserProfile } from '../../../services/users';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const ProfileDetails = ({ className, ...rest }) => {
+const ProfileDetails = ({ className, user, ...rest }) => {
   const classes = useStyles();
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
+  const [message, setMessage] = useState('');
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      className={clsx(classes.root, className)}
-      {...rest}
+    <Formik
+      enableReinitialize
+      initialValues={{
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        contactNumber: user.contactNumber,
+        address: user.address
+      }}
+      validationSchema={Yup.object().shape({
+        firstName: Yup.string().required('First name is required'),
+        lastName: Yup.string().required('Last name is required'),
+        email: Yup.string()
+          .email('Must be a valid email')
+          .max(255)
+          .required('Email is required'),
+        contactNumber: Yup.string().required('Contact number is required'),
+        address: Yup.string()
+      })}
+      onSubmit={(values) => {
+        updateUserProfile(values, (m) => setMessage(m));
+      }}
     >
-      <Card>
-        <CardHeader
-          subheader="The information can be edited"
-          title="Profile"
-        />
-        <Divider />
-        <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          p={2}
+      {({
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        touched,
+        values
+      }) => (
+        <form
+          autoComplete="off"
+          noValidate
+          className={clsx(classes.root, className)}
+          {...rest}
+          onSubmit={handleSubmit}
         >
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Save details
-          </Button>
-        </Box>
-      </Card>
-    </form>
+          <Card>
+            <CardHeader
+              subheader="The information can be edited"
+              title="Profile"
+            />
+            {message}
+            <Divider />
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    helperText="Please specify the first name"
+                    label="First name"
+                    name="firstName"
+                    error={Boolean(touched.firstName && errors.firstName)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    required
+                    value={values.firstName}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Last name"
+                    name="lastName"
+                    error={Boolean(touched.lastName && errors.lastName)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    required
+                    value={values.lastName}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Email Address"
+                    name="email"
+                    error={Boolean(touched.email && errors.email)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    required
+                    value={values.email}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Phone Number"
+                    name="contactNumber"
+                    error={Boolean(
+                      touched.contactNumber && errors.contactNumber
+                    )}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.contactNumber}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Address"
+                    name="address"
+                    error={Boolean(touched.address && errors.address)}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    required
+                    value={values.address}
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+            <Divider />
+            <Box display="flex" justifyContent="flex-end" p={2}>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={isSubmitting}
+                type="submit"
+              >
+                Save details
+              </Button>
+            </Box>
+          </Card>
+        </form>
+      )}
+    </Formik>
   );
 };
 
 ProfileDetails.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  user: PropTypes.object
+};
+
+ProfileDetails.defaultProps = {
+  className: '',
+  user: {
+    firstName: '',
+    lastName: '',
+    address: '',
+    avatarUrl: null
+  }
 };
 
 export default ProfileDetails;

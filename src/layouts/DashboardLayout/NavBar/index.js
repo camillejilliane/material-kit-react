@@ -15,55 +15,57 @@ import {
   BarChart as BarChartIcon,
   Lock as LockIcon,
   Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
+  // ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon
 } from 'react-feather';
+import getInitials from 'src/utils/getInitials';
 import NavItem from './NavItem';
-
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'SME Head',
-  name: 'Katarina Smith'
-};
 
 const items = [
   {
     href: '/app/dashboard',
     icon: BarChartIcon,
-    title: 'Dashboard'
+    title: 'Dashboard',
+    shownWhenLoggedIn: true
   },
   {
     href: '/app/customers',
     icon: UsersIcon,
-    title: 'Customers'
+    title: 'Customers',
+    shownWhenLoggedIn: true
   },
   {
     href: '/app/account',
     icon: UserIcon,
-    title: 'Vendors'
+    title: 'Vendors',
+    shownWhenLoggedIn: true
   },
-  {
-    href: '/app/transactions',
-    icon: ShoppingBagIcon,
-    title: 'Transactions'
-  },
+  // {
+  //   href: '/app/transactions',
+  //   icon: ShoppingBagIcon,
+  //   title: 'Transactions',
+  //   shownWhenLoggedIn: true
+  // },
   {
     href: '/app/settings',
     icon: SettingsIcon,
-    title: 'Settings'
+    title: 'Settings',
+    shownWhenLoggedIn: true
   },
   {
     href: '/login',
     icon: LockIcon,
-    title: 'Login'
+    title: 'Login',
+    shownWhenLoggedIn: false
   },
   {
     href: '/register',
     icon: UserPlusIcon,
-    title: 'Register'
-  },
+    title: 'Register',
+    shownWhenLoggedIn: false
+  }
 ];
 
 const useStyles = makeStyles(() => ({
@@ -82,7 +84,9 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = ({
+  onMobileClose, openMobile, user, isLoggedIn
+}) => {
   const classes = useStyles();
   const location = useLocation();
 
@@ -94,11 +98,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   }, [location.pathname]);
 
   const content = (
-    <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-    >
+    <Box height="100%" display="flex" flexDirection="column">
       <Box
         alignItems="center"
         display="flex"
@@ -109,38 +109,33 @@ const NavBar = ({ onMobileClose, openMobile }) => {
         <Avatar
           className={classes.avatar}
           component={RouterLink}
-          src={user.avatar}
+          src={user.avatarUrl}
           to="/app/account"
-        />
-        <Box
-          flexDirection="column"
         >
-          <Typography
-            className={classes.name}
-            color="textPrimary"
-            variant="h5"
-          >
-            {user.name}
+          {getInitials(`${user.firstName} ${user.lastName}`)}
+        </Avatar>
+        <Box flexDirection="column">
+          <Typography className={classes.name} color="textPrimary" variant="h5">
+            {`${user.firstName} ${user.lastName}`}
           </Typography>
-          <Typography
-            color="textSecondary"
-            variant="body2"
-          >
-            {user.jobTitle}
+          <Typography color="textSecondary" variant="body2">
+            {user.address || ''}
           </Typography>
         </Box>
       </Box>
       <Divider />
       <Box p={2}>
         <List>
-          {items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
+          {items
+            .filter((item) => item.shownWhenLoggedIn === isLoggedIn)
+            .map((item) => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))}
         </List>
       </Box>
     </Box>
@@ -175,12 +170,15 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool
+  openMobile: PropTypes.bool,
+  user: PropTypes.object,
+  isLoggedIn: PropTypes.bool
 };
 
 NavBar.defaultProps = {
   onMobileClose: () => {},
-  openMobile: false
+  openMobile: false,
+  user: {}
 };
 
 export default NavBar;

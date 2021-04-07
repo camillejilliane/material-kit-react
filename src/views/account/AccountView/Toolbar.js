@@ -8,7 +8,7 @@ import {
   InputAdornment,
   SvgIcon,
   makeStyles,
-  Typography,
+  Typography
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 
@@ -25,21 +25,14 @@ const useStyles = makeStyles((theme) => ({
 const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
 
+  const { setFilter, handleApprove } = rest;
+
   return (
-    <div
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <Typography
-        className={classes.name}
-        color="textPrimary"
-        variant="h2"
-      >
+    <div className={clsx(classes.root, className)} {...rest}>
+      <Typography className={classes.name} color="textPrimary" variant="h2">
         Manage Vendors
       </Typography>
-      <Box
-        mt={1}
-      >
+      <Box mt={1}>
         <Typography
           className={classes.name}
           color="textSecondary"
@@ -48,22 +41,16 @@ const Toolbar = ({ className, ...rest }) => {
           Accounts &gt; Vendors
         </Typography>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        mt={3}
-      >
+      <Box display="flex" justifyContent="space-between" mt={3}>
         <Box>
           <Box minWidth={500}>
             <TextField
+              onChange={(e) => setFilter(e.target.value)}
               fullWidth
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SvgIcon
-                      fontSize="small"
-                      color="action"
-                    >
+                    <SvgIcon fontSize="small" color="action">
                       <SearchIcon />
                     </SvgIcon>
                   </InputAdornment>
@@ -75,13 +62,8 @@ const Toolbar = ({ className, ...rest }) => {
           </Box>
         </Box>
         <Box>
-          <Button className={classes.exportButton}>
-            Export CSV
-          </Button>
-          <Button
-            color="primary"
-            variant="contained"
-          >
+          <Button className={classes.exportButton}>Export CSV</Button>
+          <Button color="primary" variant="contained" onClick={handleApprove}>
             Approve Vendors
           </Button>
         </Box>

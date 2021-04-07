@@ -12,10 +12,14 @@ import TransactionListView from 'src/views/transactions/TransactionListView';
 import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 
-const routes = [
+const routes = (isLoggedIn, setIsLoggedIn) => [
   {
     path: 'app',
-    element: <DashboardLayout />,
+    element: isLoggedIn ? (
+      <DashboardLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+    ) : (
+      <Navigate to="/login" />
+    ),
     children: [
       { path: 'account', element: <AccountView /> },
       { path: 'customers', element: <CustomerListView /> },
@@ -28,7 +32,7 @@ const routes = [
   },
   {
     path: '/',
-    element: <MainLayout />,
+    element: !isLoggedIn ? <MainLayout /> : <Navigate to="/app/dashboard" />,
     children: [
       { path: 'login', element: <LoginView /> },
       { path: 'register', element: <RegisterView /> },
